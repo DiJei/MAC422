@@ -1,0 +1,75 @@
+Estruturas:
+	
+	1. Lista (duplamente) ligada de unidades de memória
+		Livre/ocupada
+		Nome do processo que está usando (ou '')
+		Início
+		Tamanho
+		Próximo
+		Anterior
+	
+	2. Lista de processos (todos do arquivo)
+		Nome
+		Tempo que chega (t0)
+		Tempo que termina (tf)
+		Quanto usa da memória (b)
+		Flag (está rodando)
+		Flag (terminou)
+		Lista de instâncias de uma estrutura com:
+			Posição de memória a ser acessada
+			Instante do acesso
+			Flag (já acessou ou não)
+
+	3. Lista de listas de unidades de memória de tamanhos fixos (Quick Fit) 
+
+
+Principais funções do programa:
+	
+	Função principal:
+		Mostra o prompt do EP 2
+		Lê comandos:
+			Carrega:
+				Lê arquivo de trace
+				Guarda todos os processos na lista de processos (2)
+			
+			Espaço:
+				Salva número correspondendo ao algoritmo de gerenciamento de espaço que será usado
+			
+			Substitui:
+				Salva número correspondendo ao algoritmo de substituição de página que será usado
+			
+			Executa:
+				De x em x segundos, chama o gerenciador de memória _____
+				(1 em 1 segundo? 1/2 em 1/2?)			      ^         |
+														     / \        |
+														      |   LOOP  |
+														      |_________|
+			Sai:
+				Termina o programa
+	
+	Gerenciador de memória:
+		Olha se tem processos chegando no instante atual
+		(Processos que não estão rodando nem já terminaram de rodar)
+		Se tiver:
+			"Aloca" processos que chegaram com algoritmos de gerenciamento
+			Atualiza estruturas 1, 2 e 3
+			Chama função que simula execução dos processos
+
+	
+	Algoritmos de gerenciamento:
+		First Fit
+		Next Fit
+		Quick Fit
+
+
+	Função que simula execução dos processos:
+		Olha se tem processos usando memória no instante atual
+		Se tiver:
+			Atualiza estruturas 1, 2 e 3
+		Olha se tem processos que terminam no instante atual
+		Se tiver:
+			"Libera" memória dos processos
+			Atualiza estruturas 1, 2 e 3
+		Olha se precisa atualizar arquivo
+		Se precisar:
+			Atualiza arquivo
