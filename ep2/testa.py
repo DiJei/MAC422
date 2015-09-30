@@ -1,3 +1,4 @@
+""" ARQUIVO TEMPORARIO DE PARA TESTES """
 from estruturas import *
 
 i1 = Item(True, '', 0, 100)
@@ -29,3 +30,9 @@ lista.adiciona_depois_de(lista.inicio.prox.prox.prox, i5)
 print("lista:", lista)
 print("processo 1:", proc1)
 print("processo 2:", proc2)
+lista.remove(lista.inicio,"p3")
+print("lista:", lista)
+lista.remove(lista.inicio,"p2")
+print("lista:", lista)
+lista.remove(lista.inicio,"p1")
+print("lista:", lista)

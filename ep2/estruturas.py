@@ -81,6 +81,39 @@ class Lista:
                 item.prox.prox.ant = item
             item.prox = item.prox.prox
 
+    """
+    Remove o processo com nome tal e ja atualiza a lista juntando espacos em brancos
+    """
+    #Queria fazer de um jeito q nao precisasse colocar o inicio da lista
+    def remove(self,item,nome):
+        temp = item
+        while temp:
+            if temp.proc_nome == nome:
+               if temp.prox:
+                  #Caso que a celula esta no meio de duas celulas livres      
+                  if (temp.ant.livre and temp.prox.livre):
+                    temp.ant.tamanho_mem = temp.ant.tamanho_mem + temp.tamanho_mem + temp.prox.tamanho_mem
+                    if temp.prox.prox:
+                       temp.prox.prox.ant = temp.ant 
+                       temp.ant.prox = temp.prox.prox
+                    else:
+                       temp.ant.prox = None
+                    break
+                  #Caso que a anterior e' livre  
+                  if temp.ant.livre:
+                     temp.ant.tamanho_mem = temp.ant.tamanho_mem + temp.tamanho_mem
+                  #Caso que a proxima e' livre
+                  elif temp.prox.livre:
+                     temp.prox.tamanho_mem = temp.tamanho_mem + temp.prox.tamanho_mem
+                     temp.prox.inicio_mem = temp.inicio_mem 
+                  temp.ant.prox = temp.prox           
+                  temp.prox.ant  = temp.ant
+               else:
+                  if temp.ant.livre:
+                     temp.ant.tamanho_mem = temp.ant.tamanho_mem + temp.tamanho_mem
+                  temp.ant.prox = None
+               break
+            temp = temp.prox
 
 class Processo:
     """
