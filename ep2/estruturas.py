@@ -53,22 +53,29 @@ class Lista:
     """
 
     inicio = None
+    __iter_atual = None
 
     def __init__(self, inicio):
         self.inicio = inicio
         inicio.prox = None
         inicio.ant = None
+        self.__iter_atual = inicio
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if not self.__iter_atual:
+            raise StopIteration
+        atual = self.__iter_atual
+        self.__iter_atual = self.__iter_atual.prox
+        return atual
 
     def __str__(self):
         descricao = ""
-        if self.inicio:
-            descricao += str(self.inicio)
-        item = self.inicio.prox
-        while item:
+        for item in self:
             descricao += str(item)
-            item = item.prox
-        descricao += "\nFim da lista\n"
-        return descricao
+        return descricao + "\nFim da lista\n"
 
     def adiciona_depois_de(self, item, novo_item):
         novo_item.prox = item.prox
@@ -81,40 +88,37 @@ class Lista:
                 item.prox.prox.ant = item
             item.prox = item.prox.prox
 
-
     """
     Remove o processo com nome nome e já atualiza a lista juntando espaços
     em branco (se for o caso).
     """
     def remove(self, nome):
-        temp = self.inicio
-        while temp:
-            if temp.proc_nome == nome:
-                if temp.prox:
+        for item in self:
+            if item.proc_nome == nome:
+                if item.prox:
                     #Caso que a celula está no meio de duas células livres
-                    if (temp.ant.livre and temp.prox.livre):
-                        temp.ant.tamanho_mem = temp.ant.tamanho_mem + temp.tamanho_mem + temp.prox.tamanho_mem
-                        if temp.prox.prox:
-                            temp.prox.prox.ant = temp.ant
-                            temp.ant.prox = temp.prox.prox
+                    if (item.ant.livre and item.prox.livre):
+                        item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem + item.prox.tamanho_mem
+                        if item.prox.prox:
+                            item.prox.prox.ant = item.ant
+                            item.ant.prox = item.prox.prox
                         else:
-                            temp.ant.prox = None
+                            item.ant.prox = None
                         break
                     #Caso que a anterior é livre
-                    if temp.ant.livre:
-                        temp.ant.tamanho_mem = temp.ant.tamanho_mem + temp.tamanho_mem
+                    if item.ant.livre:
+                        item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem
                     #Caso que a proxima é livre
-                    elif temp.prox.livre:
-                        temp.prox.tamanho_mem = temp.tamanho_mem + temp.prox.tamanho_mem
-                        temp.prox.inicio_mem = temp.inicio_mem
-                    temp.ant.prox = temp.prox
-                    temp.prox.ant = temp.ant
+                    elif item.prox.livre:
+                        item.prox.tamanho_mem = item.tamanho_mem + item.prox.tamanho_mem
+                        item.prox.inicio_mem = item.inicio_mem
+                    item.ant.prox = item.prox
+                    item.prox.ant = item.ant
                 else:
-                    if temp.ant.livre:
-                        temp.ant.tamanho_mem = temp.ant.tamanho_mem + temp.tamanho_mem
-                    temp.ant.prox = None
+                    if item.ant.livre:
+                        item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem
+                    item.ant.prox = None
                 break
-            temp = temp.prox
 
 
 class Processo:
