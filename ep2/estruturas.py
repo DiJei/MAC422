@@ -132,9 +132,9 @@ class Processo:
     rodando = False
     terminou = False
 
-    def __init__(self, nome, t0, tf, b, acessos):
-        self.nome = nome
+    def __init__(self, t0, nome, tf, b, acessos):
         self.t0 = t0
+        self.nome = nome
         self.tf = tf
         self.b = b
         self.acessos = acessos

@@ -18,8 +18,8 @@ a7 = Acesso(333, 120)
 acessos1 = [a1, a2, a3, a4]
 acessos2 = [a5, a6, a7]
 
-proc1 = Processo("Proc1", 0, 100, 1024, acessos1)
-proc2 = Processo("Proc2", 120, 500, 16384, acessos2)
+proc1 = Processo(0, "Proc1", 100, 1024, acessos1)
+proc2 = Processo(120, "Proc2", 500, 16384, acessos2)
 
 lista = Lista(i1)
 lista.adiciona_depois_de(lista.inicio, i2)
