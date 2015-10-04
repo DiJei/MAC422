@@ -53,7 +53,6 @@ class Lista:
     """
 
     inicio = None
-    __iter_atual = None
 
     def __init__(self, inicio):
         self.inicio = inicio
@@ -62,14 +61,13 @@ class Lista:
         self.__iter_atual = inicio
 
     def __iter__(self):
-        return self
+        return self.gen()
 
-    def __next__(self):
-        if not self.__iter_atual:
-            raise StopIteration
-        atual = self.__iter_atual
-        self.__iter_atual = self.__iter_atual.prox
-        return atual
+    def gen(self):
+        atual = self.inicio
+        while atual:
+            yield atual
+            atual = atual.prox
 
     def __str__(self):
         descricao = ""
