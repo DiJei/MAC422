@@ -22,7 +22,7 @@ class Item:
         nome = self.proc_nome
         len_nome_proc = len(self.proc_nome) + 2
         len_inicio_mem = (len(str(self.inicio_mem)) + 2)
-        len_final_mem = (len(str(self.inicio_mem + self.tamanho_mem - 1)) + 2)
+        len_tamanho_mem = (len(str(self.tamanho_mem)) + 2)
 
         if self.livre:
             len_nome_proc = 7
@@ -30,17 +30,17 @@ class Item:
 
         descricao += " " + len_nome_proc * "_"
         descricao += " " + len_inicio_mem * "_"
-        descricao += " " + len_final_mem * "_" + " _\n"
+        descricao += " " + len_tamanho_mem * "_" + " _\n"
         descricao += "|" + len_nome_proc * " "
         descricao += "|" + len_inicio_mem * " "
-        descricao += "|" + len_final_mem * " " + "| |\n"
+        descricao += "|" + len_tamanho_mem * " " + "| |\n"
         descricao += "| " + nome + " "
         descricao += "| " + str(self.inicio_mem) + " "
-        descricao += "| " + str(self.inicio_mem + self.tamanho_mem - 1)
+        descricao += "| " + str(self.tamanho_mem)
         descricao += " |--->\n"
         descricao += "|" + len_nome_proc * "_"
         descricao += "|" + len_inicio_mem * "_"
-        descricao += "|" + len_final_mem * "_" + "|_|\n"
+        descricao += "|" + len_tamanho_mem * "_" + "|_|\n"
 
         return descricao
 
