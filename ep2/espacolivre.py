@@ -15,6 +15,19 @@ def firstFit(lista, processo):
             aloca(lista, item, processo)
             break
 
+"""
+Algoritmo que aloca o processo no primeiro pedaço de memória livre que achar
+partindo da ultima busca feita anteriomente
+"""
+def nextFit(lista,processo,ultimo): #Precisa colocar a ultima posicao
+    item = ultimo
+    while item:
+       if item.livre and item.tamanho_mem >= processo.b
+          aloca(lista,item, processo)
+          if item.prox:             #Devolve a proximo item
+             return item.prox
+          else:
+             return lista.inicio    #Fim da lista, devolve o primeiro item
 
 def aloca(lista, posicao, processo):
     if posicao.tamanho_mem > processo.b:
