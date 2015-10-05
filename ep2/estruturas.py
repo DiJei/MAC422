@@ -181,3 +181,27 @@ class Acesso:
         descricao = "Acesso à memória na posição " + str(self.posicao)
         descricao += " aos " + str(self.instante) + "s"
         return descricao
+
+class TabelaPagina:
+   """
+   Tabela de paginas, basicamente um dicionário cuja as chaves são
+   as paginas e quadros de paginas são valores.
+   """
+   pages = 0
+
+   def __init__(self,virtual):
+      pages = int(virtual / 16) #Quantidade de paginas
+      tabela = {}
+      for x in pages:
+         tabela[bin(x)[2:]] = None 
+   
+   def map(endereco_virtual):
+      key = bin(endereco_virtual)[2:(bin(pages - 1).len)]
+      if tabela[key]:
+         return tabela[key]
+      else:               #Page Fault....
+         print("Page Fault")
+         #1 Escolher pagina para guardar em disco(algoritmos)
+         #2 Verificar se os area foi modificada
+         #3 colocar em disco
+         #4 mudar bit absent/present

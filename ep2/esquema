@@ -21,7 +21,8 @@ Estruturas:
 			Flag (já acessou ou não)
 
 	3. Lista de listas de unidades de memória de tamanhos fixos (Quick Fit) 
-
+    
+    4.Tabela de paginas para implementar mmu
 
 Principais funções do programa:
 	
