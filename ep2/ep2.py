@@ -3,20 +3,21 @@
 #-------------------------------------#
 #    Programa com loop principal      #
 #-------------------------------------#
-from util import openFile, simulationStart, listaProcessosBuild
+from util import *
+from time import *
 from estruturas import *
-from espacolivre import *
 
 #Coloca valores inicias
 line = " "
 comands = ()
-espID = -1
-subsID = -1
+espID = 1
+subsID = 1
 trace = None
 total = 0
 virtual = 0
 memoria = None
 listaProcessos = []
+tempo_inicio = 0
 
 #----Loop Principal----#
 while (1):
@@ -55,11 +56,17 @@ while (1):
         if ((espID < 1 or espID > 3) or (subsID < 1 or subsID > 4)):
             print("Valores para algoritmos errados")
         else:
+            tempo_inicio = time()
             simulationStart(float(comands[1]), espID, subsID)
             # depois mexer aqui pra usar o simulationStart mesmo
-            # e nao to considerando o tempo nem nada por enquanto
-            for processo in listaProcessos:
-                firstFit(memoria, processo)
+            # e nao to considerando acessos nem paginas por enquanto
+            i = 0
+            while not processos_terminaram(listaProcessos):
+                gerencia_memoria(tempo_inicio, listaProcessos, memoria)
+                simula_processos(tempo_inicio, listaProcessos, memoria)
+                print(i, "s")
                 print(memoria)
+                sleep(1)
+                i += 1
 
 #----FIM do programa----#

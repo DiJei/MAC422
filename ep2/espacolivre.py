@@ -25,4 +25,7 @@ def aloca(lista, posicao, processo):
 
     posicao.livre = False
     posicao.proc_nome = processo.nome
+    posicao.proc_id = processo.pid
     posicao.tamanho_mem = processo.b
+
+    processo.rodando = True

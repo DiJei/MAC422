@@ -10,6 +10,7 @@ class Item:
 
     prox = None
     ant = None
+    proc_id = -1
 
     def __init__(self, livre, proc_nome, inicio_mem, tamanho_mem):
         self.livre = livre
@@ -93,7 +94,13 @@ class Lista:
     def remove(self, nome):
         for item in self:
             if item.proc_nome == nome:
-                if item.prox:
+
+                if self.inicio is item:
+                    if item.prox and item.prox.livre:
+                        self.inicio = item.prox
+                        self.inicio.ant = None
+
+                if item.prox and item.ant:
                     #Caso que a celula está no meio de duas células livres
                     if (item.ant.livre and item.prox.livre):
                         item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem + item.prox.tamanho_mem
@@ -103,20 +110,27 @@ class Lista:
                         else:
                             item.ant.prox = None
                         break
+                if item.ant:
                     #Caso que a anterior é livre
                     if item.ant.livre:
                         item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem
+                        item.ant.prox = item.prox
+                        if item.prox:
+                            item.prox.ant = item.ant
+                        break
+                if item.prox:
                     #Caso que a proxima é livre
-                    elif item.prox.livre:
+                    if item.prox.livre:
                         item.prox.tamanho_mem = item.tamanho_mem + item.prox.tamanho_mem
                         item.prox.inicio_mem = item.inicio_mem
-                    item.ant.prox = item.prox
-                    item.prox.ant = item.ant
-                else:
-                    if item.ant.livre:
-                        item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem
-                    item.ant.prox = None
-                break
+                        if item.ant:
+                            item.ant.prox = item.prox
+                            item.prox.ant = item.ant
+                        break
+
+                item.livre = True
+                item.proc_nome = ""
+                item.proc_id = -1
 
 
 class Processo:
@@ -132,9 +146,10 @@ class Processo:
     rodando = False
     terminou = False
 
-    def __init__(self, t0, nome, tf, b, acessos):
+    def __init__(self, t0, nome, pid, tf, b, acessos):
         self.t0 = t0
         self.nome = nome
+        self.pid = pid
         self.tf = tf
         self.b = b
         self.acessos = acessos
