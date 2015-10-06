@@ -18,7 +18,7 @@ virtual = 0
 memoria = None
 listaProcessos = []
 tempo_inicio = 0
-
+tamanhos = {} #Dicionario que guarda quantas vezes cada tamanho ocorreu no arquivo
 #----Loop Principal----#
 while (1):
     #---Ler entrada---#
@@ -38,7 +38,8 @@ while (1):
             temp = (trace.readline()).split(" ")
             total = int(temp[0])
             virtual = int(temp[1])
-            listaProcessos = listaProcessosBuild(trace)
+            listaProcessos = listaProcessosBuild(trace,tamanhos)
+            tamanhos_repetidos = sorted(tamanhos.items(), key = itemgetter(1)) #Lista com tuplas de pares tamanho em b e quantidade de vezes que se repete
             trace.close()
             memoria = Lista(Item(True, "", 0, virtual))
             print("memoria:\n", memoria)
@@ -57,7 +58,7 @@ while (1):
             print("Valores para algoritmos errados")
         else:
             tempo_inicio = time()
-            simulationStart(float(comands[1]), espID, subsID)
+            simulationStart(float(comands[1]), espID, subsID, total, virtual)
             # depois mexer aqui pra usar o simulationStart mesmo
             # e nao to considerando acessos nem paginas por enquanto
             i = 0

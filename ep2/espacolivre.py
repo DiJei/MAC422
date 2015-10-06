@@ -22,7 +22,7 @@ partindo da ultima busca feita anteriomente
 def nextFit(lista,processo,ultimo): #Precisa colocar a ultima posicao
     item = ultimo
     while item:
-       if item.livre and item.tamanho_mem >= processo.b
+       if item.livre and item.tamanho_mem >= processo.b:
           aloca(lista,item, processo)
           if item.prox:             #Devolve a proximo item
              return item.prox
