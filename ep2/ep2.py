@@ -15,7 +15,9 @@ subsID = 1
 trace = None
 total = 0
 virtual = 0
-memoria = None
+memoria_virtual = None
+memoria_fisica = None
+tabela_paginas = None
 listaProcessos = []
 tempo_inicio = 0
 tamanhos = {} #Dicionario que guarda quantas vezes cada tamanho ocorreu no arquivo
@@ -41,8 +43,11 @@ while (1):
             listaProcessos = listaProcessosBuild(trace,tamanhos)
             tamanhos_repetidos = sorted(tamanhos.items(), key = itemgetter(1)) #Lista com tuplas de pares tamanho em b e quantidade de vezes que se repete
             trace.close()
-            memoria = Lista(Item(True, "", 0, virtual))
-            print("memoria:\n", memoria)
+            memoria_virtual = Lista(Item(True, "", 0, virtual))
+            memoria_fisica = Lista(Item(True, "", 0, total))
+            tabela_paginas = TabelaPagina(virtual)
+            print("memoria_virtual:\n", memoria_virtual)
+            print("memoria_fisica:\n", memoria_fisica)
 
     #Seleciona qual algoritmo de esapaco usar
     if (comands[0] == "espaco"):
@@ -63,10 +68,11 @@ while (1):
             # e nao to considerando acessos nem paginas por enquanto
             i = 0
             while not processos_terminaram(listaProcessos):
-                gerencia_memoria(tempo_inicio, listaProcessos, memoria)
-                simula_processos(tempo_inicio, listaProcessos, memoria)
+                gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
+                simula_processos(tempo_inicio, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica)
                 print(i, "s")
-                print(memoria)
+                print("mem_vir:\n", memoria_virtual)
+                print("mem_fis:\n", memoria_fisica)
                 sleep(1)
                 i += 1
 

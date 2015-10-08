@@ -58,15 +58,41 @@ def gerencia_memoria(tempo_inicio, lista_processos, mem_virtual):
     escreve_na_memoria(mem_virtual, False)
 
 
-def simula_processos(tempo_inicio, lista_processos, mem_virtual):
+def simula_processos(tempo_inicio, lista_processos, tabela_paginas, mem_virtual, mem_fisica):
     for processo in lista_processos:
         tempo_atual = time() - tempo_inicio
+
+        for acesso in processo.acessos:
+        	if tempo_atual >= acesso.instante and not acesso.ocorreu:
+        		posicao_fisica = tabela_paginas.map(acesso.posicao)
+        		if posicao_fisica is not None:
+        			print("Posicao", acesso.posicao, "está no quadro", posicao_fisica)
+        			# atualiza bit R?
+        		else:
+        			print("Page Fault!!!")
+        			substitui_pagina(tabela_paginas, acesso, processo, mem_fisica)
+        		acesso.ocorreu = True
+
         if tempo_atual >= processo.tf and processo.rodando:
             print("ta =", tempo_atual, "tf =", processo.tf)
             mem_virtual.remove(processo.nome)
             processo.rodando = False
             processo.terminou = True
+    
     escreve_na_memoria(mem_virtual, False)
+    escreve_na_memoria(mem_fisica, True)
+
+
+def substitui_pagina(tabela_paginas, acesso, processo, mem_fisica):
+	for pedaco in mem_fisica:
+		if pedaco.livre and pedaco.tamanho_mem >= 16:
+			tabela_paginas.tabela[int(acesso.posicao / 16)] = int(pedaco.inicio_mem / 16)
+			pagina = Processo(processo.t0, processo.nome, processo.pid, processo.tf, 16, processo.acessos)
+			aloca(mem_fisica, pedaco, pagina)
+			return
+
+	# nenhum espaço livre na memória física
+	# chama algoritmo de substituição de página escolhido
 
 
 # funcao que converte array de -1s de tamanho tamanho em string binaria
