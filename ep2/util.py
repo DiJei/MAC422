@@ -23,7 +23,7 @@ def openFile(filename):
 def listaProcessosBuild(trace, tamanhos):
     lista = []
     linha = trace.readline()
-    i = 0
+    pid = 0
     while linha:
         linha_trace = linha.split(" ")
         if linha_trace[-1] == "\n" or linha_trace[-1] == '':
@@ -32,14 +32,14 @@ def listaProcessosBuild(trace, tamanhos):
         for x in range(4, len(linha_trace), 2):
             acesso = Acesso(int(linha_trace[x]), int(linha_trace[x + 1]))
             acessos.append(acesso)
-        processo = Processo(int(linha_trace[0]), linha_trace[1], i, int(linha_trace[2]), int(linha_trace[3]), acessos)
+        processo = Processo(int(linha_trace[0]), linha_trace[1], pid, int(linha_trace[2]), int(linha_trace[3]), acessos)
         if int(linha_trace[3]) not in tamanhos.keys():
             tamanhos[int(linha_trace[3])] = 1
         else:
             tamanhos[int(linha_trace[3])] = tamanhos[int(linha_trace[3])] + 1
         lista.append(processo)
         linha = trace.readline()
-        i += 1
+        pid += 1
     return lista
 
 def processos_terminaram(lista_processos):
