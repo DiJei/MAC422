@@ -182,26 +182,30 @@ class Acesso:
         descricao += " aos " + str(self.instante) + "s"
         return descricao
 
-class TabelaPagina:
-   """
-   Tabela de paginas, basicamente um dicionário cuja as chaves são
-   as paginas e quadros de paginas são valores.
-   """
-   pages = 0
 
-   def __init__(self,virtual):
-      pages = int(virtual / 16) #Quantidade de paginas
-      tabela = {}
-      for x in pages:
-         tabela[bin(x)[2:]] = None 
-   
-   def map(endereco_virtual):
-      key = bin(endereco_virtual)[2:(bin(pages - 1).len)]
-      if tabela[key]:
-         return tabela[key]
-      else:               #Page Fault....
-         print("Page Fault")
-         #1 Escolher pagina para guardar em disco(algoritmos)
-         #2 Verificar se os area foi modificada
-         #3 colocar em disco
-         #4 mudar bit absent/present
+class TabelaPagina:
+    """
+    Tabela de paginas, basicamente um dicionário cuja as chaves são
+    as paginas e quadros de paginas são valores.
+    """
+    paginas = 0
+    tabela = {}
+
+    def __init__(self, virtual):
+        self.paginas = int(virtual / 16)   # Quantidade de paginas
+        for x in range(self.paginas):
+            self.tabela[x] = None
+
+    def map(self, endereco_virtual):
+        pagina = int(endereco_virtual / 16)
+        offset = endereco_virtual - (pagina * 16)
+        quadro = self.tabela[pagina]
+
+        if quadro is not None:
+            return self.tabela[pagina] * 16 + offset
+        else:                   # Page Fault....
+            print("Page Fault")
+            # 1 Escolher pagina para guardar em disco(algoritmos)
+            # 2 Verificar se os area foi modificada
+            # 3 colocar em disco
+            # 4 mudar bit absent/present
