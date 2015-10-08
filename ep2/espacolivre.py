@@ -30,15 +30,19 @@ def nextFit(lista,processo,ultimo): #Precisa colocar a ultima posicao
              return lista.inicio    #Fim da lista, devolve o primeiro item
 
 def aloca(lista, posicao, processo):
+    num_pags = int(processo.b / 16)
+    if processo.b % 16 != 0:
+        num_pags += 1
+
     if posicao.tamanho_mem > processo.b:
-        posicao_fim_processo = posicao.inicio_mem + processo.b - 1
-        tamanho_mem_resto = posicao.tamanho_mem - processo.b
+        posicao_fim_processo = posicao.inicio_mem + (num_pags * 16) - 1
+        tamanho_mem_resto = posicao.tamanho_mem - num_pags * 16
         resto = Item(True, "", posicao_fim_processo + 1, tamanho_mem_resto)
         lista.adiciona_depois_de(posicao, resto)
 
     posicao.livre = False
     posicao.proc_nome = processo.nome
     posicao.proc_id = processo.pid
-    posicao.tamanho_mem = processo.b
+    posicao.tamanho_mem = num_pags * 16
 
     processo.rodando = True
