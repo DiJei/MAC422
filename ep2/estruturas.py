@@ -76,6 +76,12 @@ class Lista:
             descricao += str(item)
         return descricao + "\nFim da lista\n"
 
+    def localiza(self, nome):
+        for item in self:
+            if item.proc_nome == nome:
+                return item
+        return None
+
     def adiciona_depois_de(self, item, novo_item):
         novo_item.prox = item.prox
         novo_item.ant = item
