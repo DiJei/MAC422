@@ -46,7 +46,6 @@ def processos_terminaram(lista_processos):
     for processo in lista_processos:
         if not processo.terminou:
             return False
-
     return True
 
 
@@ -57,6 +56,15 @@ def gerencia_memoria(tempo_inicio, lista_processos, mem_virtual):
             firstFit(mem_virtual, processo)
     escreve_na_memoria(mem_virtual, False)
 
+"""
+Temporario
+"""
+def gerencia_memoria2(tempo_inicio, lista_processos, mem_virtual, ultimo):
+    for processo in lista_processos:
+        tempo_atual = time() - tempo_inicio
+        if tempo_atual >= processo.t0 and not processo.rodando and not processo.terminou:
+           ultimo =  nextFit(mem_virtual, processo, ultimo)
+    escreve_na_memoria(mem_virtual, False)
 
 def simula_processos(tempo_inicio, lista_processos, tabela_paginas, mem_virtual, mem_fisica):
     for processo in lista_processos:

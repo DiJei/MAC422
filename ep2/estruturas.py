@@ -1,3 +1,4 @@
+
 class Item:
     """
     Representa um item de uma lista ligada para gerenciar memória livre.

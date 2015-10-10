@@ -66,13 +66,14 @@ while (1):
             simulationStart(float(comands[1]), espID, subsID, total, virtual)
             # depois mexer aqui pra usar o simulationStart mesmo
             i = 0
+            ultimo = memoria_virtual.inicio
             while not processos_terminaram(listaProcessos):
-                gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
+                gerencia_memoria2(tempo_inicio, listaProcessos, memoria_virtual,ultimo)
+                #gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
                 simula_processos(tempo_inicio, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica)
                 print(i, "s")
                 print("mem_vir:\n", memoria_virtual)
                 print("mem_fis:\n", memoria_fisica)
                 sleep(1)
                 i += 1
-
 #----FIM do programa----#

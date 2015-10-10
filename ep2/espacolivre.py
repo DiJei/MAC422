@@ -28,6 +28,7 @@ def nextFit(lista,processo,ultimo): #Precisa colocar a ultima posicao
              return item.prox
           else:
              return lista.inicio    #Fim da lista, devolve o primeiro item
+       item = item.prox
 
 def aloca(lista, posicao, processo):
     num_pags = int(processo.b / 16)
