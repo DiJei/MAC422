@@ -83,6 +83,12 @@ class Lista:
                 return item
         return None
 
+    def pedaco_na_pagina(self, pagina):
+        for item in self:
+            if int(item.inicio_mem / 16) == pagina:
+                return item
+        return None
+
     def adiciona_depois_de(self, item, novo_item):
         novo_item.prox = item.prox
         novo_item.ant = item
@@ -196,12 +202,12 @@ class TabelaPagina:
     as paginas e quadros de paginas são valores.
     """
     paginas = 0
-    tabela = {}
+    tabela = []     # o índice é a página, o valor é o quadro
 
     def __init__(self, virtual):
         self.paginas = int(virtual / 16)   # Quantidade de paginas
         for x in range(self.paginas):
-            self.tabela[x] = None
+            self.tabela.append(None)
 
     def map(self, endereco_virtual):
         pagina = int(endereco_virtual / 16)

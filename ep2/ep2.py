@@ -19,6 +19,7 @@ memoria_virtual = None
 memoria_fisica = None
 tabela_paginas = None
 listaProcessos = []
+lista_paginas = []
 tempo_inicio = 0
 tamanhos = {} #Dicionario que guarda quantas vezes cada tamanho ocorreu no arquivo
 #----Loop Principal----#
@@ -70,7 +71,7 @@ while (1):
             while not processos_terminaram(listaProcessos):
                 gerencia_memoria2(tempo_inicio, listaProcessos, memoria_virtual,ultimo)
                 #gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
-                simula_processos(tempo_inicio, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica)
+                simula_processos(tempo_inicio, lista_paginas, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica)
                 print(i, "s")
                 print("mem_vir:\n", memoria_virtual)
                 print("mem_fis:\n", memoria_fisica)

@@ -66,7 +66,7 @@ def gerencia_memoria2(tempo_inicio, lista_processos, mem_virtual, ultimo):
            ultimo =  nextFit(mem_virtual, processo, ultimo)
     escreve_na_memoria(mem_virtual, False)
 
-def simula_processos(tempo_inicio, lista_processos, tabela_paginas, mem_virtual, mem_fisica):
+def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, mem_virtual, mem_fisica):
     for processo in lista_processos:
         tempo_atual = time() - tempo_inicio
 
@@ -81,12 +81,12 @@ def simula_processos(tempo_inicio, lista_processos, tabela_paginas, mem_virtual,
                     # atualiza bit R?
                 else:
                     print("Page Fault!!!", (posicao_virtual))
-                    substitui_pagina(tabela_paginas, posicao_virtual, processo, mem_fisica)
+                    gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica)
                 acesso.ocorreu = True
 
         if tempo_atual >= processo.tf and processo.rodando:
             print("ta =", tempo_atual, "tf =", processo.tf)
-            libera_paginas(tabela_paginas, mem_virtual, processo)
+            libera_paginas(tabela_paginas, lista_paginas, mem_virtual, processo)
             mem_virtual.remove(processo.nome)
             mem_fisica.remove(processo.nome)
             processo.rodando = False
@@ -96,22 +96,43 @@ def simula_processos(tempo_inicio, lista_processos, tabela_paginas, mem_virtual,
     escreve_na_memoria(mem_fisica, True)
 
 
-def libera_paginas(tabela_paginas, mem_virtual, processo):
+def libera_paginas(tabela_paginas, lista_paginas, mem_virtual, processo):
     end_virt = mem_virtual.localiza(processo.nome)
     for pagina in range(end_virt.inicio_mem, end_virt.inicio_mem + end_virt.tamanho_mem, 16):
         tabela_paginas.tabela[int(pagina / 16)] = None
+        print("vou remover", int(pagina/16))
+        if int(pagina / 16) in lista_paginas:
+            lista_paginas.remove(int(pagina / 16))
 
 
-def substitui_pagina(tabela_paginas, posicao_virtual, processo, mem_fisica):
+def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica):
+    print("lista:", lista_paginas)
     for pedaco in mem_fisica:
         if pedaco.livre and pedaco.tamanho_mem >= 16:
             tabela_paginas.tabela[int(posicao_virtual / 16)] = int(pedaco.inicio_mem / 16)
             pagina = Processo(processo.t0, processo.nome, processo.pid, processo.tf, 16, processo.acessos)
             aloca(mem_fisica, pedaco, pagina)
+            lista_paginas.append(int(posicao_virtual / 16))
+            print("adicionei", int(posicao_virtual / 16))
             return
 
     # nenhum espaço livre na memória física
     # chama algoritmo de substituição de página escolhido
+    first_in_first_out(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
+
+
+def first_in_first_out(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica):
+    pagina_fis_pedaco = tabela_paginas.tabela[lista_paginas[0]]
+    pedaco = mem_fisica.pedaco_na_pagina(pagina_fis_pedaco)
+    pedaco.proc_nome = processo.nome
+    pedaco.proc_id = processo.pid
+    pagina_virt_pedaco = tabela_paginas.tabela.index(int(pedaco.inicio_mem / 16))
+    tabela_paginas.tabela[pagina_virt_pedaco] = None
+    tabela_paginas.tabela[int(posicao_virtual / 16)] = int(pedaco.inicio_mem / 16)
+    print("vou remover", lista_paginas[0])
+    lista_paginas.remove(lista_paginas[0])
+    lista_paginas.append(int(posicao_virtual / 16))
+    print("adicionei", int(posicao_virtual / 16))
 
 
 # funcao que converte array de -1s de tamanho tamanho em string binaria
