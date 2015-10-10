@@ -65,7 +65,6 @@ while (1):
             tempo_inicio = time()
             simulationStart(float(comands[1]), espID, subsID, total, virtual)
             # depois mexer aqui pra usar o simulationStart mesmo
-            # e nao to considerando acessos nem paginas por enquanto
             i = 0
             while not processos_terminaram(listaProcessos):
                 gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)

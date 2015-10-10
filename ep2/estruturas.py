@@ -115,7 +115,7 @@ class Lista:
                             item.ant.prox = item.prox.prox
                         else:
                             item.ant.prox = None
-                        break
+                        continue
                 if item.ant:
                     #Caso que a anterior é livre
                     if item.ant.livre:
@@ -123,7 +123,7 @@ class Lista:
                         item.ant.prox = item.prox
                         if item.prox:
                             item.prox.ant = item.ant
-                        break
+                        continue
                 if item.prox:
                     #Caso que a proxima é livre
                     if item.prox.livre:
@@ -132,7 +132,7 @@ class Lista:
                         if item.ant:
                             item.ant.prox = item.prox
                             item.prox.ant = item.ant
-                        break
+                        continue
 
                 item.livre = True
                 item.proc_nome = ""
@@ -204,16 +204,6 @@ class TabelaPagina:
 
     def map(self, endereco_virtual):
         pagina = int(endereco_virtual / 16)
-        # offset = endereco_virtual - (pagina * 16)
         quadro = self.tabela[pagina]
-
-        # if quadro is not None:
-        #    return self.tabela[pagina] * 16 + offset
-        # else:                   # Page Fault....
-        #    print("Page Fault")
-            # 1 Escolher pagina para guardar em disco(algoritmos)
-            # 2 Verificar se os area foi modificada
-            # 3 colocar em disco
-            # 4 mudar bit absent/present
 
         return quadro

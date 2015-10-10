@@ -78,12 +78,20 @@ def simula_processos(tempo_inicio, lista_processos, tabela_paginas, mem_virtual,
 
         if tempo_atual >= processo.tf and processo.rodando:
             print("ta =", tempo_atual, "tf =", processo.tf)
+            libera_paginas(tabela_paginas, mem_virtual, processo)
             mem_virtual.remove(processo.nome)
+            mem_fisica.remove(processo.nome)
             processo.rodando = False
             processo.terminou = True
 
     escreve_na_memoria(mem_virtual, False)
     escreve_na_memoria(mem_fisica, True)
+
+
+def libera_paginas(tabela_paginas, mem_virtual, processo):
+    end_virt = mem_virtual.localiza(processo.nome)
+    for pagina in range(end_virt.inicio_mem, end_virt.inicio_mem + end_virt.tamanho_mem, 16):
+        tabela_paginas.tabela[int(pagina / 16)] = None
 
 
 def substitui_pagina(tabela_paginas, posicao_virtual, processo, mem_fisica):
