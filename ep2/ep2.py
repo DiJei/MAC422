@@ -69,7 +69,10 @@ while (1):
             i = 0
             ultimo = memoria_virtual.inicio
             while not processos_terminaram(listaProcessos):
-                gerencia_memoria2(tempo_inicio, listaProcessos, memoria_virtual,ultimo)
+                if i % 5 == 0:
+                    tabela_paginas.reseta_acessos()
+
+                gerencia_memoria2(tempo_inicio, listaProcessos, memoria_virtual, ultimo)
                 #gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
                 simula_processos(tempo_inicio, lista_paginas, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica)
                 print(i, "s")

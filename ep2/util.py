@@ -5,6 +5,7 @@
 #-------------------------------------#
 from estruturas import *
 from espacolivre import *
+from substituipaginas import *
 from struct import *
 from time import *
 from operator import itemgetter
@@ -78,11 +79,13 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
                 posicao_fisica = tabela_paginas.map(posicao_virtual)
                 if posicao_fisica is not None:
                     print("Posicao", posicao_virtual, "está no quadro", posicao_fisica)
-                    # atualiza bit R?
                 else:
                     print("Page Fault!!!", (posicao_virtual))
                     gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica)
                 acesso.ocorreu = True
+                # atualiza bit R
+                tabela_paginas.acessos[int(posicao_virtual / 16)] = 1
+
 
         if tempo_atual >= processo.tf and processo.rodando:
             print("ta =", tempo_atual, "tf =", processo.tf)
@@ -119,20 +122,8 @@ def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, m
     # nenhum espaço livre na memória física
     # chama algoritmo de substituição de página escolhido
     first_in_first_out(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
-
-
-def first_in_first_out(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica):
-    pagina_fis_pedaco = tabela_paginas.tabela[lista_paginas[0]]
-    pedaco = mem_fisica.pedaco_na_pagina(pagina_fis_pedaco)
-    pedaco.proc_nome = processo.nome
-    pedaco.proc_id = processo.pid
-    pagina_virt_pedaco = tabela_paginas.tabela.index(int(pedaco.inicio_mem / 16))
-    tabela_paginas.tabela[pagina_virt_pedaco] = None
-    tabela_paginas.tabela[int(posicao_virtual / 16)] = int(pedaco.inicio_mem / 16)
-    print("vou remover", lista_paginas[0])
-    lista_paginas.remove(lista_paginas[0])
-    lista_paginas.append(int(posicao_virtual / 16))
-    print("adicionei", int(posicao_virtual / 16))
+    #second_chance_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
+    #not_recently_used_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
 
 
 # funcao que converte array de -1s de tamanho tamanho em string binaria
