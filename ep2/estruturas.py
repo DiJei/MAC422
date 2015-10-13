@@ -219,3 +219,47 @@ class TabelaPagina:
 
     def reseta_acessos(self):
         self.acessos = [0 for pagina in self.acessos]
+
+"""
+ Matriz para implementacao do algoritmo de substituicao de pagina LRU
+"""
+import numpy as np
+class MatrizAcessos:
+    matriz = None
+    size = 0
+    def __init__(self,num_qaudros):
+       self.matriz = np.zeros((num_qaudros * num_qaudros), dtype = np.uint8)
+       self.matriz = np.reshape(self.matriz,(num_qaudros,num_qaudros))
+       self.size = self.matriz.shape[0]
+    """
+    recebe o numero de quadro e coloca 1 na linha k
+    e zera coluna k 
+    """
+    def acesso_de_quadro(self,k):  #observacao o a contagem da pagina dos quadros comeca do 1
+       k = k -1
+       self.matriz[k] =  1
+       self.matriz[0:self.size, k:k+1:1] =   self.matriz[0:self.size, k:k+1:1] * 0
+       #print( self.size)
+    """
+    devolve a linha que possui o menor numero binário
+    """
+    def menor_quadro(self):
+        temp = 0
+        menor_bin = 0 
+        aux = 1
+        linha = 0
+        #alguma coisa
+        for x in range(0,self.size):
+           menor_bin += aux * self.matriz[0][self.size - 1 - x]
+           aux *= 10  
+        for x in range(1,self.size):
+           aux = 1
+           temp = 0
+           for y in range(0,self.size):
+              temp += aux * self.matriz[x][self.size - 1 - y]
+              aux *= 10
+           if menor_bin > temp:
+              print (menor_bin, temp)
+              menor_bin = temp
+              linha = x 
+        return linha + 1
