@@ -56,18 +56,15 @@ def second_chance_page(processo, lista_paginas, posicao_virtual, tabela_paginas,
     first_in_first_out(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
 
 
-def least_recently_used (processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica, matriz_acessos):
+def least_recently_used (processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica, matriz):
    """
    basicamente apenas escolhe a linha com menor numero binario para ser retirada, isso implica que a medida que
    as paginas forem referenciadas é necessário atualiza a matriz_acesso usando metodo acesso_de_quadro 
    """
-   menor = matriz_acesso.menor_quadro()
-   num_quadro_pagina =  menor
-   x = 0
-   for pagina in lista_paginas:
-      if tabela_paginas.map(pagina) == menor:
-         num_pagina_antiga = pagina
-         break
+   menor = matriz.menor_quadro()
+   print(menor," menor")
+   num_quadro_pagina =  (menor - 1)
+   num_pagina_antiga = lista_paginas[menor - 1]
    num_pagina_nova = int(posicao_virtual / 16)
    quadro_pagina = mem_fisica.pedaco_na_pagina(num_quadro_pagina)
    substitui_pagina(quadro_pagina, tabela_paginas, processo, num_pagina_antiga, num_pagina_nova, num_quadro_pagina, lista_paginas)

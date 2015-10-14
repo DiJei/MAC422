@@ -90,7 +90,7 @@ while (1):
 
                 print(i, "s")
                 print("mem_vir:\n", memoria_virtual)
-                #print("mem_fis:\n", memoria_fisica)
+                print("mem_fis:\n", memoria_fisica)
                 sleep(1)
                 i += 1
 #----FIM do programa----#
