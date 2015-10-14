@@ -67,17 +67,20 @@ while (1):
             simulationStart(float(comands[1]), espID, subsID, total, virtual)
             # depois mexer aqui pra usar o simulationStart mesmo
             i = 0
-            ultimo = memoria_virtual.inicio
+            ultima_pos = memoria_virtual.inicio.inicio_mem
             while not processos_terminaram(listaProcessos):
                 if i % 5 == 0:
                     tabela_paginas.reseta_acessos()
 
-                gerencia_memoria2(tempo_inicio, listaProcessos, memoria_virtual, ultimo)
-                #gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
+                #ultima_pos = gerencia_memoria2(tempo_inicio, listaProcessos, memoria_virtual, ultima_pos)
+                gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
+
+                #print("ultima_pos =", ultima_pos, "mem_vir pos aloc:\n", memoria_virtual)
+
                 simula_processos(tempo_inicio, lista_paginas, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica)
                 print(i, "s")
                 print("mem_vir:\n", memoria_virtual)
-                print("mem_fis:\n", memoria_fisica)
+                #print("mem_fis:\n", memoria_fisica)
                 sleep(1)
                 i += 1
 #----FIM do programa----#

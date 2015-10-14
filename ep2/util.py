@@ -60,12 +60,14 @@ def gerencia_memoria(tempo_inicio, lista_processos, mem_virtual):
 """
 Temporario
 """
-def gerencia_memoria2(tempo_inicio, lista_processos, mem_virtual, ultimo):
+def gerencia_memoria2(tempo_inicio, lista_processos, mem_virtual, ultima_pos):
     for processo in lista_processos:
         tempo_atual = time() - tempo_inicio
         if tempo_atual >= processo.t0 and not processo.rodando and not processo.terminou:
-           ultimo =  nextFit(mem_virtual, processo, ultimo)
+           print("ta =", tempo_atual, "t0 =", processo.t0)
+           ultima_pos = nextFit(mem_virtual, processo, ultima_pos)
     escreve_na_memoria(mem_virtual, False)
+    return ultima_pos
 
 def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, mem_virtual, mem_fisica):
     for processo in lista_processos:
@@ -114,7 +116,7 @@ def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, m
         if pedaco.livre and pedaco.tamanho_mem >= 16:
             tabela_paginas.tabela[int(posicao_virtual / 16)] = int(pedaco.inicio_mem / 16)
             pagina = Processo(processo.t0, processo.nome, processo.pid, processo.tf, 16, processo.acessos)
-            aloca(mem_fisica, pedaco, pagina)
+            aloca(mem_fisica, pedaco.inicio_mem, pagina)
             lista_paginas.append(int(posicao_virtual / 16))
             print("adicionei", int(posicao_virtual / 16))
             return
