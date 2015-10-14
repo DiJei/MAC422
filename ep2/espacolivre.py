@@ -62,13 +62,13 @@ def quick_fit(lista_memoria, processo, dic_tamanhos_fixos):
 
 def atualiza_dic_tamanhos_fixos(lista_memoria, dic_tamanhos_fixos):
     for item in lista_memoria:
-        if item.tamanho_mem in dic_tamanhos_fixos.keys():
+        if item.tamanho_mem in dic_tamanhos_fixos.keys() and item.livre:
             dic_tamanhos_fixos[item.tamanho_mem].append(item.inicio_mem)
 
     for tamanho in dic_tamanhos_fixos.keys():
         for posicao in dic_tamanhos_fixos[tamanho]:
             pedaco_da_posicao = lista_memoria.pedaco_na_posicao(posicao)
-            if pedaco_da_posicao.tamanho_mem != tamanho:
+            if pedaco_da_posicao.tamanho_mem != tamanho or not pedaco_da_posicao.livre:
                 dic_tamanhos_fixos[tamanho].remove(posicao)
 
 
