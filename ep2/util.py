@@ -50,26 +50,24 @@ def processos_terminaram(lista_processos):
     return True
 
 
-def gerencia_memoria(tempo_inicio, lista_processos, mem_virtual):
+def gerencia_memoria(tempo_inicio, lista_processos, mem_virtual, ultima_pos=None, dic_tamanhos_fixos=None):
     for processo in lista_processos:
         tempo_atual = time() - tempo_inicio
         if tempo_atual >= processo.t0 and not processo.rodando and not processo.terminou:
-            firstFit(mem_virtual, processo)
-    escreve_na_memoria(mem_virtual, False)
+            if ultima_pos is None and dic_tamanhos_fixos is None:
+                firstFit(mem_virtual, processo)
+            elif dic_tamanhos_fixos is None:
+                ultima_pos = nextFit(mem_virtual, processo, ultima_pos)
+            elif ultima_pos is None:
+                quick_fit(mem_virtual, processo, dic_tamanhos_fixos)
+                atualiza_dic_tamanhos_fixos(mem_virtual, dic_tamanhos_fixos)
 
-"""
-Temporario
-"""
-def gerencia_memoria2(tempo_inicio, lista_processos, mem_virtual, ultima_pos):
-    for processo in lista_processos:
-        tempo_atual = time() - tempo_inicio
-        if tempo_atual >= processo.t0 and not processo.rodando and not processo.terminou:
-           print("ta =", tempo_atual, "t0 =", processo.t0)
-           ultima_pos = nextFit(mem_virtual, processo, ultima_pos)
     escreve_na_memoria(mem_virtual, False)
-    return ultima_pos
+    if ultima_pos is not None and dic_tamanhos_fixos is None:
+        return ultima_pos
 
-def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, mem_virtual, mem_fisica):
+
+def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, mem_virtual, mem_fisica, dic_tamanhos_fixos=None):
     for processo in lista_processos:
         tempo_atual = time() - tempo_inicio
 
@@ -97,6 +95,9 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
             mem_fisica.remove(processo.nome)
             processo.rodando = False
             processo.terminou = True
+
+            if dic_tamanhos_fixos is not None:
+                atualiza_dic_tamanhos_fixos(mem_virtual, dic_tamanhos_fixos)
 
     escreve_na_memoria(mem_virtual, False)
     escreve_na_memoria(mem_fisica, True)
@@ -147,9 +148,3 @@ def escreve_na_memoria(lista, principal):
     with open(arq, 'wb') as memoria:
         memoria.write(mem)
         memoria.close()
-
-
-#Funcao que comeca simulacao ja com parametros certos
-def simulationStart(delay, espID, subsID, total, virtual):
-    #Calma jose, tamo fazendo
-    return 0

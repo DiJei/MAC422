@@ -9,7 +9,7 @@ from estruturas import *
 
 #Coloca valores inicias
 line = " "
-comands = ()
+comandos = ()
 espID = 1
 subsID = 1
 trace = None
@@ -26,17 +26,17 @@ tamanhos = {} #Dicionario que guarda quantas vezes cada tamanho ocorreu no arqui
 while (1):
     #---Ler entrada---#
     line = input("[ep2]: ")
-    comands = line.split(" ")
+    comandos = line.split(" ")
 
     #---Verifica comandos--#
 
     #Sai do programa
-    if (comands[0] == "sai"):
+    if (comandos[0] == "sai"):
         break
 
     #Carrega o arquivo trace
-    if (comands[0] == "carrega"):
-        trace = openFile(comands[1])
+    if (comandos[0] == "carrega"):
+        trace = openFile(comandos[1])
         if (trace != 0):
             temp = (trace.readline()).split(" ")
             total = int(temp[0])
@@ -51,33 +51,43 @@ while (1):
             print("memoria_fisica:\n", memoria_fisica)
 
     #Seleciona qual algoritmo de esapaco usar
-    if (comands[0] == "espaco"):
-        espID = int(comands[1])
+    if (comandos[0] == "espaco"):
+        espID = int(comandos[1])
 
     #Seleciona qual algoritmo de substituicao usar
-    if (comands[0] == "substitui"):
-        subsID = int(comands[1])
+    if (comandos[0] == "substitui"):
+        subsID = int(comandos[1])
 
     #Comeca simulacao
-    if (comands[0] == "executa"):
+    if (comandos[0] == "executa"):
         if ((espID < 1 or espID > 3) or (subsID < 1 or subsID > 4)):
             print("Valores para algoritmos errados")
         else:
             tempo_inicio = time()
-            simulationStart(float(comands[1]), espID, subsID, total, virtual)
             # depois mexer aqui pra usar o simulationStart mesmo
             i = 0
             ultima_pos = memoria_virtual.inicio.inicio_mem
+            dic_tamanhos_fixos = {16: [], 32: [], 128: [], 512: [], 1024: [], 2048: []}
             while not processos_terminaram(listaProcessos):
                 if i % 5 == 0:
                     tabela_paginas.reseta_acessos()
 
-                ultima_pos = gerencia_memoria2(tempo_inicio, listaProcessos, memoria_virtual, ultima_pos)
-                #gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
+                if espID == 1:
+                    gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
+
+                if espID == 2:
+                    ultima_pos = gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual, ultima_pos)
+
+                if espID == 3:
+                    gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual, None, dic_tamanhos_fixos)
 
                 print("ultima_pos =", ultima_pos, "mem_vir pos aloc:\n", memoria_virtual)
 
-                simula_processos(tempo_inicio, lista_paginas, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica)
+                if espID != 3:
+                    simula_processos(tempo_inicio, lista_paginas, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica)
+                else:
+                    simula_processos(tempo_inicio, lista_paginas, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica, dic_tamanhos_fixos)
+
                 print(i, "s")
                 print("mem_vir:\n", memoria_virtual)
                 #print("mem_fis:\n", memoria_fisica)

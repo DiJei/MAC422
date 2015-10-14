@@ -42,13 +42,43 @@ def nextFit(lista, processo, ultima_pos):
         ultima_pos = pedaco_ultima_pos.inicio_mem
 
 
+def quick_fit(lista_memoria, processo, dic_tamanhos_fixos):
+    try:
+        posicao = dic_tamanhos_fixos[processo.b][0]
+        aloca(lista_memoria, posicao, processo)
+        return
+    except (KeyError, IndexError):
+        for tamanho in sorted(dic_tamanhos_fixos.keys()):
+            if tamanho > processo.b and dic_tamanhos_fixos[tamanho]:
+                posicao = dic_tamanhos_fixos[tamanho][0]
+                dic_tamanhos_fixos[tamanho].remove(posicao)
+                aloca(lista_memoria, posicao, processo)
+                return
+
+        # não achou nenhuma posição nas listas de tamanhos fixos, usa First Fit
+        print("caí no first fit...")
+        firstFit(lista_memoria, processo)
+
+
+def atualiza_dic_tamanhos_fixos(lista_memoria, dic_tamanhos_fixos):
+    for item in lista_memoria:
+        if item.tamanho_mem in dic_tamanhos_fixos.keys():
+            dic_tamanhos_fixos[item.tamanho_mem].append(item.inicio_mem)
+
+    for tamanho in dic_tamanhos_fixos.keys():
+        for posicao in dic_tamanhos_fixos[tamanho]:
+            pedaco_da_posicao = lista_memoria.pedaco_na_posicao(posicao)
+            if pedaco_da_posicao.tamanho_mem != tamanho:
+                dic_tamanhos_fixos[tamanho].remove(posicao)
+
+
 def aloca(lista, posicao, processo):
     num_pags = int(processo.b / 16)
     if processo.b % 16 != 0:
         num_pags += 1
 
     pedaco = lista.pedaco_na_pagina(int(posicao / 16))
-    if pedaco.tamanho_mem > processo.b:
+    if pedaco.tamanho_mem > (num_pags * 16):
         posicao_fim_processo = pedaco.inicio_mem + (num_pags * 16) - 1
         tamanho_mem_resto = pedaco.tamanho_mem - num_pags * 16
         resto = Item(True, "", posicao_fim_processo + 1, tamanho_mem_resto)
