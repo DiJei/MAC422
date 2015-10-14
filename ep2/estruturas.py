@@ -77,9 +77,25 @@ class Lista:
             descricao += str(item)
         return descricao + "\nFim da lista\n"
 
+    def fragmenta(self, posicao):
+        # assume que a posição recebida como argumento vai ser sempre uma
+        # posição no meio de um pedaço de memória na lista e cria um novo
+        # pedaço começando nessa posição
+        pedaco = self.pedaco_na_posicao(posicao)
+        tamanho_novo = pedaco.tamanho_mem + pedaco.inicio_mem - posicao
+        novo_pedaco = Item(pedaco.livre, pedaco.proc_nome, posicao, tamanho_novo)
+        pedaco.tamanho_mem = posicao - pedaco.inicio_mem
+        self.adiciona_depois_de(pedaco, novo_pedaco)
+
     def localiza(self, nome):
         for item in self:
             if item.proc_nome == nome:
+                return item
+        return None
+
+    def pedaco_na_posicao(self, posicao):
+        for item in self:
+            if item.inicio_mem <= posicao < item.inicio_mem + item.tamanho_mem:
                 return item
         return None
 
@@ -227,9 +243,9 @@ import numpy as np
 class MatrizAcessos:
     matriz = None
     size = 0
-    def __init__(self,num_qaudros):
-       self.matriz = np.zeros((num_qaudros * num_qaudros), dtype = np.uint8)
-       self.matriz = np.reshape(self.matriz,(num_qaudros,num_qaudros))
+    def __init__(self,num_quadros):
+       self.matriz = np.zeros((num_quadros * num_quadros), dtype = np.uint8)
+       self.matriz = np.reshape(self.matriz,(num_quadros,num_quadros))
        self.size = self.matriz.shape[0]
     """
     recebe o numero de quadro e coloca 1 na linha k

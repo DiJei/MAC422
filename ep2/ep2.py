@@ -72,10 +72,10 @@ while (1):
                 if i % 5 == 0:
                     tabela_paginas.reseta_acessos()
 
-                #ultima_pos = gerencia_memoria2(tempo_inicio, listaProcessos, memoria_virtual, ultima_pos)
-                gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
+                ultima_pos = gerencia_memoria2(tempo_inicio, listaProcessos, memoria_virtual, ultima_pos)
+                #gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual)
 
-                #print("ultima_pos =", ultima_pos, "mem_vir pos aloc:\n", memoria_virtual)
+                print("ultima_pos =", ultima_pos, "mem_vir pos aloc:\n", memoria_virtual)
 
                 simula_processos(tempo_inicio, lista_paginas, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica)
                 print(i, "s")

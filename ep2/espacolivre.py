@@ -21,13 +21,13 @@ Algoritmo que aloca o processo no primeiro pedaço de memória livre que achar
 partindo da ultima busca feita anteriomente
 """
 def nextFit(lista, processo, ultima_pos):
-    pedaco_ultima_pos = lista.pedaco_na_pagina(int(ultima_pos / 16))
+    pedaco_ultima_pos = lista.pedaco_na_posicao(ultima_pos)
     while pedaco_ultima_pos:
 
         if pedaco_ultima_pos.inicio_mem != ultima_pos:
             tamanho_resto = pedaco_ultima_pos.tamanho_mem - (ultima_pos - pedaco_ultima_pos.inicio_mem)
             if tamanho_resto >= processo.b:
-                pedaco_ultima_pos.fragmenta(ultima_pos)
+                lista.fragmenta(ultima_pos)
                 aloca(lista, ultima_pos, processo)
                 return ultima_pos + processo.b
             pedaco_ultima_pos = pedaco_ultima_pos.prox
