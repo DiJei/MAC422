@@ -85,7 +85,8 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
                 acesso.ocorreu = True
                 # atualiza bit R
                 tabela_paginas.acessos[int(posicao_virtual / 16)] = 1
-
+                #Nesse ponto devemos atualiza a matriz de acessos
+                #matriz.acesso_quadro(tabela_pagina.map(posicao_virtual))
 
         if tempo_atual >= processo.tf and processo.rodando:
             print("ta =", tempo_atual, "tf =", processo.tf)
