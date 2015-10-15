@@ -108,6 +108,8 @@ class Lista:
     def adiciona_depois_de(self, item, novo_item):
         novo_item.prox = item.prox
         novo_item.ant = item
+        if item.prox and item.prox.ant:
+            item.prox.ant = novo_item
         item.prox = novo_item
 
     def remove_depois_de(self, item):
@@ -130,8 +132,8 @@ class Lista:
                         self.inicio.ant = None
 
                 if item.prox and item.ant:
-                    #Caso que a celula está no meio de duas células livres
                     if (item.ant.livre and item.prox.livre):
+                        # Caso que a celula está no meio de duas células livres
                         item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem + item.prox.tamanho_mem
                         if item.prox.prox:
                             item.prox.prox.ant = item.ant
@@ -140,16 +142,16 @@ class Lista:
                             item.ant.prox = None
                         continue
                 if item.ant:
-                    #Caso que a anterior é livre
                     if item.ant.livre:
+                        # Caso que a anterior é livre
                         item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem
                         item.ant.prox = item.prox
                         if item.prox:
                             item.prox.ant = item.ant
                         continue
                 if item.prox:
-                    #Caso que a proxima é livre
                     if item.prox.livre:
+                        # Caso que a proxima é livre
                         item.prox.tamanho_mem = item.tamanho_mem + item.prox.tamanho_mem
                         item.prox.inicio_mem = item.inicio_mem
                         if item.ant:
