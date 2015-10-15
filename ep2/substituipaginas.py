@@ -69,3 +69,20 @@ def least_recently_used(processo, lista_paginas, posicao_virtual, tabela_paginas
     num_pagina_nova = int(posicao_virtual / 16)
     quadro_pagina = mem_fisica.pedaco_na_pagina(num_quadro_pagina)
     substitui_pagina(quadro_pagina, tabela_paginas, processo, num_pagina_antiga, num_pagina_nova, num_quadro_pagina, lista_paginas)
+
+
+def least_recently_used_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica):
+    menor = [-1, -1]    # valor do contador e página, respectivamente
+    for pagina in lista_paginas:
+        if tabela_paginas.contador[pagina] < menor[0] or menor[0] == -1:
+            menor[0] = tabela_paginas.contador[pagina]
+            menor[1] = pagina
+
+    num_quadro_pagina = tabela_paginas.tabela[menor[1]]
+    num_pagina_antiga = menor[1]
+    num_pagina_nova = int(posicao_virtual / 16)
+    quadro_pagina = mem_fisica.pedaco_na_pagina(num_quadro_pagina)
+    print('contadores:')
+    for pagina in lista_paginas:
+        print(pagina, tabela_paginas.contador[pagina])
+    substitui_pagina(quadro_pagina, tabela_paginas, processo, num_pagina_antiga, num_pagina_nova, num_quadro_pagina, lista_paginas)

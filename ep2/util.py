@@ -64,6 +64,11 @@ def gerencia_memoria(tempo_inicio, lista_processos, mem_virtual, ultima_pos=None
 
 
 def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, mem_virtual, mem_fisica, subs, matriz_acessos, dic_tamanhos_fixos=None):
+    if subs == 4:
+        # atualiza contador para o LRU
+        for pagina in lista_paginas:
+            tabela_paginas.contador[pagina] += tabela_paginas.acessos[pagina]
+
     for processo in lista_processos:
         tempo_atual = time() - tempo_inicio
 
@@ -132,7 +137,7 @@ def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, m
     if subs == 3:
         second_chance_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
     if subs == 4:
-        least_recently_used(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica, matriz_acessos)
+        least_recently_used_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
 
 
 """

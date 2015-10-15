@@ -95,7 +95,7 @@ while (1):
                 if espID == 3:
                     gerencia_memoria(tempo_inicio, listaProcessos, memoria_virtual, None, dic_tamanhos_fixos)
 
-                print("ultima_pos =", ultima_pos, "mem_vir pos aloc:\n", memoria_virtual)
+                #print("ultima_pos =", ultima_pos, "mem_vir pos aloc:\n", memoria_virtual)
 
                 if espID != 3:
                     simula_processos(tempo_inicio, lista_paginas, listaProcessos, tabela_paginas, memoria_virtual, memoria_fisica, subsID, matriz_acessos)
@@ -104,7 +104,7 @@ while (1):
 
                 print(i, "s")
                 print("mem_vir:\n", memoria_virtual)
-                print("mem_fis:\n", memoria_fisica)
+                #print("mem_fis:\n", memoria_fisica)
                 if subsID == 4:
                     print(matriz_acessos.matriz)
                 sleep(1)

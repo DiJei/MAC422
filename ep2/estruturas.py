@@ -222,12 +222,15 @@ class TabelaPagina:
     paginas = 0
     tabela = []     # o índice é a página, o valor é o quadro
     acessos = []    # cada posição representa o bit R da respectiva página
+    contador = []   # cada posição representa o valor do contador da
+                    # respectiva página
 
     def __init__(self, virtual):
         self.paginas = int(virtual / 16)   # Quantidade de paginas
         for x in range(self.paginas):
             self.tabela.append(None)
             self.acessos.append(0)
+            self.contador.append(0)
 
     def map(self, endereco_virtual):
         pagina = int(endereco_virtual / 16)
