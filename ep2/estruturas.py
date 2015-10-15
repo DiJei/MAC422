@@ -262,21 +262,21 @@ class MatrizAcessos:
     devolve a linha que possui o menor numero binário
     """
     def menor_quadro(self):
-        temp = 0
-        menor_bin = 0
-        aux = 1
-        linha = 0
-        #alguma coisa
-        for x in range(0, self.size):
-            menor_bin += aux * self.matriz[0][self.size - 1 - x]
-            aux *= 10
-        for x in range(1, self.size):
-            aux = 1
-            temp = 0
-            for y in range(0, self.size):
-                temp += aux * self.matriz[x][self.size - 1 - y]
-                aux *= 10
-            if menor_bin > temp:
-                menor_bin = temp
-                linha = x
-        return linha + 1
+        menor_bin = [-1, -1]  # número e linha, respectivamente
+
+        for linha in range(self.size):
+            valor_linha = 0
+            potencia = self.size - 1
+
+            for coluna in range(self.size):
+                valor_linha += (2 ** potencia) * self.matriz[linha][coluna]
+                potencia -= 1
+
+            if valor_linha == 0:
+                return linha
+
+            if valor_linha < menor_bin[0] or menor_bin[0] == -1:
+                menor_bin[0] = valor_linha
+                menor_bin[1] = linha
+
+        return menor_bin[1]

@@ -85,6 +85,8 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
                 if subs == 4:
                     matriz_acessos.acesso_quadro(tabela_paginas.map(posicao_virtual))
 
+                escreve_na_memoria(mem_fisica, True)
+
         if tempo_atual >= processo.tf and processo.rodando:
             print("ta =", tempo_atual, "tf =", processo.tf)
             libera_paginas(tabela_paginas, lista_paginas, mem_virtual, processo)
@@ -96,8 +98,9 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
             if dic_tamanhos_fixos is not None:
                 atualiza_dic_tamanhos_fixos(mem_virtual, dic_tamanhos_fixos)
 
+            escreve_na_memoria(mem_fisica, True)
+
     escreve_na_memoria(mem_virtual, False)
-    escreve_na_memoria(mem_fisica, True)
 
 
 def libera_paginas(tabela_paginas, lista_paginas, mem_virtual, processo):
@@ -132,17 +135,20 @@ def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, m
         least_recently_used(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica, matriz_acessos)
 
 
-# funcao que converte array de -1s de tamanho tamanho em string binaria
-# (em hexadecimal) correspondente (1 byte por numero) e depois escreve
-# isso no arquivo
+"""
+Função que recebe uma lista representando o estado atual da memória (física ou
+virtual) e escreve, de forma binária, em /tmp/ep2.mem (física) ou /tmp/ep2.vir
+(virtual) esse estado, representando bytes ocupados por processos com o número
+(PID) do processo e bytes livres com o número 255
+"""
 def escreve_na_memoria(lista, principal):
     mem = b""
     for item in lista:
         tamanho = item.tamanho_mem
         if item.livre:
-            mem += pack('b' * tamanho, *([-1] * tamanho))
+            mem += pack('B' * tamanho, *([255] * tamanho))
         else:
-            mem += pack('b' * tamanho, *([item.proc_id] * tamanho))
+            mem += pack('B' * tamanho, *([item.proc_id] * tamanho))
     if principal:
         arq = "/tmp/ep2.mem"
     else:
