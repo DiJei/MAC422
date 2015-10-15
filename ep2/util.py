@@ -21,7 +21,7 @@ def openFile(filename):
 
 
 #Funcao para montar a lista de processos, com as informcoes do arquivo trace
-def listaProcessosBuild(trace, tamanhos):
+def listaProcessosBuild(trace):
     lista = []
     linha = trace.readline()
     pid = 0
@@ -34,10 +34,6 @@ def listaProcessosBuild(trace, tamanhos):
             acesso = Acesso(int(linha_trace[x]), int(linha_trace[x + 1]))
             acessos.append(acesso)
         processo = Processo(int(linha_trace[0]), linha_trace[1], pid, int(linha_trace[2]), int(linha_trace[3]), acessos)
-        if int(linha_trace[3]) not in tamanhos.keys():
-            tamanhos[int(linha_trace[3])] = 1
-        else:
-            tamanhos[int(linha_trace[3])] = tamanhos[int(linha_trace[3])] + 1
         lista.append(processo)
         linha = trace.readline()
         pid += 1
@@ -67,7 +63,7 @@ def gerencia_memoria(tempo_inicio, lista_processos, mem_virtual, ultima_pos=None
         return ultima_pos
 
 
-def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, mem_virtual, mem_fisica, dic_tamanhos_fixos=None):
+def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, mem_virtual, mem_fisica, subs, matriz_acessos, dic_tamanhos_fixos=None):
     for processo in lista_processos:
         tempo_atual = time() - tempo_inicio
 
@@ -81,12 +77,13 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
                     print("Posicao", posicao_virtual, "está no quadro", posicao_fisica)
                 else:
                     print("Page Fault!!!", (posicao_virtual))
-                    gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica)
+                    gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica, subs, matriz_acessos)
                 acesso.ocorreu = True
                 # atualiza bit R
                 tabela_paginas.acessos[int(posicao_virtual / 16)] = 1
                 #Nesse ponto devemos atualiza a matriz de acessos
-                #matriz.acesso_quadro(tabela_pagina.map(posicao_virtual))
+                if subs == 4:
+                    matriz_acessos.acesso_quadro(tabela_paginas.map(posicao_virtual))
 
         if tempo_atual >= processo.tf and processo.rodando:
             print("ta =", tempo_atual, "tf =", processo.tf)
@@ -112,7 +109,7 @@ def libera_paginas(tabela_paginas, lista_paginas, mem_virtual, processo):
             lista_paginas.remove(int(pagina / 16))
 
 
-def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica):
+def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica, subs, matriz_acessos):
     print("lista:", lista_paginas)
     for pedaco in mem_fisica:
         if pedaco.livre and pedaco.tamanho_mem >= 16:
@@ -125,9 +122,14 @@ def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, m
 
     # nenhum espaço livre na memória física
     # chama algoritmo de substituição de página escolhido
-    first_in_first_out(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
-    #second_chance_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
-    #not_recently_used_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
+    if subs == 1:
+        not_recently_used_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
+    if subs == 2:
+        first_in_first_out(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
+    if subs == 3:
+        second_chance_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica)
+    if subs == 4:
+        least_recently_used(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica, matriz_acessos)
 
 
 # funcao que converte array de -1s de tamanho tamanho em string binaria
