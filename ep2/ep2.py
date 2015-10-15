@@ -7,12 +7,9 @@ from util import *
 from time import *
 from estruturas import *
 
-#Coloca valores inicias
-line = " "
-comandos = ()
+# Coloca valores inicias
 espID = 0
 subsID = 0
-trace = None
 total = 0
 virtual = 0
 memoria_virtual = None
@@ -20,11 +17,12 @@ memoria_fisica = None
 tabela_paginas = None
 listaProcessos = []
 lista_paginas = []
-matriz_acessos = None
 tempo_inicio = 0
-dic_tamanhos_fixos = {}
+matriz_acessos = None
+
 #----Loop Principal----#
 while (1):
+
     #---Ler entrada---#
     line = input("[ep2]: ")
     comandos = line.split(" ")
@@ -71,16 +69,22 @@ while (1):
         if len(comandos) == 1:
             print("Especifique de quantos em quantos segundos o estado das memórias deve ser exibido")
             continue
+
         if ((espID < 1 or espID > 3) or (subsID < 1 or subsID > 4)):
             print("Valores para algoritmos errados")
+
         else:
             tempo_inicio = time()
-            # depois mexer aqui pra usar o simulationStart mesmo
             i = 0
-            ultima_pos = memoria_virtual.inicio.inicio_mem
-            #dic_tamanhos_fixos = {16: [], 32: [], 128: [], 512: [], 1024: [], 2048: []}
-            for x in range(16,1600,16):
-                dic_tamanhos_fixos[x] = []
+
+            if espID == 2:
+                ultima_pos = memoria_virtual.inicio.inicio_mem
+
+            if espID == 3:
+                dic_tamanhos_fixos = {}
+                for x in range(16, 1601, 16):
+                    dic_tamanhos_fixos[x] = []
+
             if subsID == 4:
                 matriz_acessos = MatrizAcessos(int(total / 16))
 
@@ -106,9 +110,10 @@ while (1):
 
                 print(i, "s")
                 print("mem_vir:\n", memoria_virtual)
-                #print("mem_fis:\n", memoria_fisica)
+                print("mem_fis:\n", memoria_fisica)
                 if subsID == 4:
                     print(matriz_acessos.matriz)
                 sleep(1)
                 i += 1
+
 #----FIM do programa----#
