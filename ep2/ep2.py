@@ -22,7 +22,7 @@ listaProcessos = []
 lista_paginas = []
 matriz_acessos = None
 tempo_inicio = 0
-
+dic_tamanhos_fixos = {}
 #----Loop Principal----#
 while (1):
     #---Ler entrada---#
@@ -78,7 +78,9 @@ while (1):
             # depois mexer aqui pra usar o simulationStart mesmo
             i = 0
             ultima_pos = memoria_virtual.inicio.inicio_mem
-            dic_tamanhos_fixos = {16: [], 32: [], 128: [], 512: [], 1024: [], 2048: []}
+            #dic_tamanhos_fixos = {16: [], 32: [], 128: [], 512: [], 1024: [], 2048: []}
+            for x in range(16,1600,16):
+                dic_tamanhos_fixos[x] = []
             if subsID == 4:
                 matriz_acessos = MatrizAcessos(int(total / 16))
 
