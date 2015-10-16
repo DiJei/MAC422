@@ -18,10 +18,8 @@ def substitui_pagina(quadro_pagina, tabela_paginas, processo, num_pagina_antiga,
     tabela_paginas.tabela[num_pagina_antiga] = None
     tabela_paginas.tabela[num_pagina_nova] = num_quadro_pagina
 
-    print("vou remover", num_pagina_antiga)
     lista_paginas.remove(num_pagina_antiga)
     lista_paginas.append(num_pagina_nova)
-    print("adicionei", num_pagina_nova)
 
 
 """
@@ -41,17 +39,14 @@ def not_recently_used_page(processo, lista_paginas, posicao_virtual, tabela_pagi
 
     if classe0:
         num_pagina_antiga = classe0[0]
-        print("vou tirar", classe0[0], "da classe 0")
     else:
         num_pagina_antiga = classe1[0]
-        print("vou tirar", classe1[0], "da classe 1")
 
     num_pagina_nova = int(posicao_virtual / 16)
     num_quadro_pagina = tabela_paginas.tabela[num_pagina_antiga]
     quadro_pagina = mem_fisica.pedaco_na_pagina(num_quadro_pagina)
 
     substitui_pagina(quadro_pagina, tabela_paginas, processo, num_pagina_antiga, num_pagina_nova, num_quadro_pagina, lista_paginas)
-    print("adicionei", num_pagina_nova)
 
 
 """
@@ -76,7 +71,6 @@ procedimento para a próxima página no começo da lista.
 """
 def second_chance_page(processo, lista_paginas, posicao_virtual, tabela_paginas, mem_fisica):
     while tabela_paginas.acessos[lista_paginas[0]] != 0:
-        print("dando segunda chance pra", lista_paginas[0], "")
         tabela_paginas.acessos[lista_paginas[0]] = 0
         comeco_lista = lista_paginas[0]
         lista_paginas.remove(comeco_lista)
@@ -101,7 +95,4 @@ def least_recently_used_page(processo, lista_paginas, posicao_virtual, tabela_pa
     num_pagina_antiga = menor[1]
     num_pagina_nova = int(posicao_virtual / 16)
     quadro_pagina = mem_fisica.pedaco_na_pagina(num_quadro_pagina)
-    # print('contadores:')
-    # for pagina in lista_paginas:
-    #     print(pagina, tabela_paginas.contador[pagina])
     substitui_pagina(quadro_pagina, tabela_paginas, processo, num_pagina_antiga, num_pagina_nova, num_quadro_pagina, lista_paginas)

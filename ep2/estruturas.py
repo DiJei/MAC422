@@ -117,6 +117,15 @@ class Lista:
                 return item
         return None
 
+    # retorna quanto da memória está livre (em bytes)
+    def quantidade_livre(self):
+        livre = 0
+        for item in self:
+            if item.livre:
+                livre += item.tamanho_mem
+
+        return livre
+
     def adiciona_depois_de(self, item, novo_item):
         novo_item.prox = item.prox
         novo_item.ant = item

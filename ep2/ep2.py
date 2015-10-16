@@ -45,8 +45,6 @@ while (1):
             memoria_virtual = Lista(Item(True, "", 0, virtual))
             memoria_fisica = Lista(Item(True, "", 0, total))
             tabela_paginas = TabelaPagina(virtual)
-            print("memoria_virtual:\n", memoria_virtual)
-            print("memoria_fisica:\n", memoria_fisica)
 
     # Seleciona qual algoritmo de espaço usar
     if (comandos[0] == "espaco"):
@@ -98,17 +96,21 @@ while (1):
                 if espID == 3:
                     gerencia_memoria(tempo_inicio, lista_processos, memoria_virtual, None, dic_tamanhos_fixos)
 
-                #print("ultima_pos =", ultima_pos, "mem_vir pos aloc:\n", memoria_virtual)
-
                 if espID != 3:
                     simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, memoria_virtual, memoria_fisica, subsID)
                 else:
                     simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, memoria_virtual, memoria_fisica, subsID, dic_tamanhos_fixos)
 
-                print(i, "s")
                 if i % int(comandos[1]) == 0:
-                    print("mem_vir:\n", memoria_virtual)
-                    print("mem_fis:\n", memoria_fisica)
+                    print("Memória Física:")
+                    livre_fisica = memoria_fisica.quantidade_livre()
+                    ocupada_fisica = total - livre_fisica
+                    print("Livre: " + str(livre_fisica) + "/" + str(total))
+                    print("Memória Virtual:")
+                    livre_virtual = memoria_virtual.quantidade_livre()
+                    ocupada_virtual = virtual - livre_virtual
+                    print("Livre: " + str(livre_virtual) + "/" + str(virtual) + "\n")
+                    print(memoria_virtual)
 
                 sleep(1)
                 i += 1

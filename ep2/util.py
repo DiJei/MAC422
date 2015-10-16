@@ -103,10 +103,8 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
                     posicao_virtual = processo_mem_virt.inicio_mem + acesso.posicao
 
                 posicao_fisica = tabela_paginas.tabela[int(posicao_virtual / 16)]
-                if posicao_fisica is not None:
-                    print("Posicao", posicao_virtual, "está no quadro", posicao_fisica)
-                else:
-                    print("Page Fault!!!", (posicao_virtual))
+                if posicao_fisica is None:
+                    # Page Fault
                     gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica, subs)
                 acesso.ocorreu = True
 
@@ -116,7 +114,6 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
                 escreve_na_memoria(mem_fisica, True)
 
         if tempo_atual >= processo.tf and processo.rodando:
-            print("ta =", tempo_atual, "tf =", processo.tf)
             libera_paginas(tabela_paginas, lista_paginas, mem_virtual, processo)
             mem_virtual.remove(processo.nome)
             mem_fisica.remove(processo.nome)
@@ -140,7 +137,6 @@ def libera_paginas(tabela_paginas, lista_paginas, mem_virtual, processo):
     end_virt = mem_virtual.localiza(processo.nome)
     for pagina in range(end_virt.inicio_mem, end_virt.inicio_mem + end_virt.tamanho_mem, 16):
         tabela_paginas.tabela[int(pagina / 16)] = None
-        print("vou remover", int(pagina/16))
         if int(pagina / 16) in lista_paginas:
             lista_paginas.remove(int(pagina / 16))
 
@@ -151,14 +147,12 @@ espaço livre e chamando o algoritmo de substituição de páginas especificado
 se não houver.
 """
 def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica, subs):
-    print("lista:", lista_paginas)
     for pedaco in mem_fisica:
         if pedaco.livre and pedaco.tamanho_mem >= 16:
             tabela_paginas.tabela[int(posicao_virtual / 16)] = int(pedaco.inicio_mem / 16)
             pagina = Processo(processo.t0, processo.nome, processo.pid, processo.tf, 16, processo.acessos)
             aloca(mem_fisica, pedaco.inicio_mem, pagina)
             lista_paginas.append(int(posicao_virtual / 16))
-            print("adicionei", int(posicao_virtual / 16))
             return
 
     # nenhum espaço livre na memória física

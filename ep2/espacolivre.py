@@ -66,7 +66,6 @@ def quick_fit(lista_memoria, processo, dic_tamanhos_fixos):
                 return
 
         # não achou nenhuma posição nas listas de tamanhos fixos, usa First Fit
-        print("caí no first fit...")
         first_fit(lista_memoria, processo)
 
 
