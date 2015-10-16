@@ -6,7 +6,7 @@ Nosso código fonte está escrito em Python 3, e o programa foi testado nas vers
 Para rodar o EP, basta digitar:
 python3 ep2.py
 
-Observação: na maioria dos sistemas, pelo menos até o dia atual, é preciso chamar python3 para executar o Python 3, mas existe uma possibilidade de que chamando apenas python o Python 3 execute.
+Observação: na maioria dos sistemas, pelo menos até o dia atual, é preciso chamar python3 para executar o Python 3, mas existe uma possibilidade de que chamando apenas python o Python 3 execute. Além disso, não foi fornecido nenhum arquivo como Makefile ou similar pois não é necessário compilar nada, basta executar o programa com a linha descrita acima.
 
 
 Após iniciar a execução do ep2.py, o usuário deve escolher os algoritmos de gerência de espaço livre e substituição de páginas que quer usar com os comandos "espaco <num>" e "substitui <num>", respectivamente, deve carregar um arquivo de trace com o comando "carrega <arquivo>" e, para começar a executar a simulação, deve usar o comando "executa <intervalo>", conforme dito no enuncidado. Após o término da simulação, caso o usuário queira executar novamente a simulação, ele precisa carregar o arquivo novamente.
