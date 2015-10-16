@@ -1,0 +1,35 @@
+Nome: Fabio Brzostek Muller, Nº USP: 8536127
+Nome: Daniel Jorge Renjiffo, Nº USP: 8531845
+
+Nosso código fonte está escrito em Python 3, e o programa foi testado nas versões 3.2.3 e 3.4.2, mas deve funcionar com qualquer versão do Python maior ou igual a 3. Para instalar o interpretador de Python, basta seguir esse link: https://www.python.org/downloads/ e escolher a versão.
+
+Para rodar o EP, basta digitar:
+python3 ep2.py
+
+Observação: na maioria dos sistemas, pelo menos até o dia atual, é preciso chamar python3 para executar o Python 3, mas existe uma possibilidade de que chamando apenas python o Python 3 execute.
+
+
+Após iniciar a execução do ep2.py, o usuário deve escolher os algoritmos de gerência de espaço livre e substituição de páginas que quer usar com os comandos "espaco <num>" e "substitui <num>", respectivamente, deve carregar um arquivo de trace com o comando "carrega <arquivo>" e, para começar a executar a simulação, deve usar o comando "executa <intervalo>", conforme dito no enuncidado. Após o término da simulação, caso o usuário queira executar novamente a simulação, ele precisa carregar o arquivo novamente.
+
+De <intervalo> em <intervalo> segundos, o programa mostra o estado das memórias, o que consiste em mostrar quantos bytes estão livres e quantos ocupados em cada uma, no formato "Livres: livres/total" e "Ocupados: ocupados/total", e também a lista ligada que representa a memória virtual (a que representa a memória física não é exibida). Os elementos dessa lista ligada são representados da seguinte maneira:
+ ______ ________ _________ _
+|      |        |         | |              Onde nome é o nome do processo (ou "Livre" caso seja um espaço livre),
+| nome | inicio | tamanho |--->            inicio é a posição da memória onde começa esse pedaço e tamanho é o
+|______|________|_________|_|              tamanho do pedaço.
+
+
+Os arquivos estruturas.py, espacolivre.py, substituipaginas.py e util.py não devem ser executados, são apenas módulos contendo funções que, direta ou indiretamente, são chamadas pelo programa principal no ep2.py.
+
+Os módulos já existentes que usamos foram "struct" e "time". Ambos são da biblioteca padrão de Python e, portanto, não precisam ser instaladas separadamente.
+
+O módulo "struct" é usado para lidar com arquivos binários. Nós usamos ele na função "escreve_na_memoria()" para converter os IDs dos processos (números inteiros de 0 a 254) em representações binárias de 1 byte por número. Mais especificamente, usamos a função "pack()", que recebe uma string de formato com o formato a ser usado e uma quantidade arbitrária de argumentos que são os números a serem convertidos para binário; a função devolve uma string binária com os números convertidos de acordo com o formato. Usamos o formato "B", que representa um inteiro positivo de tamanho 1 byte. Mais informações podem ser obtidas em: https://docs.python.org/3/library/struct.html
+Observação: para representar o valor -1, que indica um espaço livre, usamos o número 255.
+
+O módulo "time" contém funções relacionadas ao tempo, e usamos ele justamente para controlar a passagem de tempo de modo a fazer com que os processos chegassem, acessassem a memória e terminassem nos instantes certos. Mais especificamente, usamos a função "time()", que retorna um float com o número de segundos desde o Epoch Time. Registramos no começo da execução da simulação o valor o tempo retornado por "time()" e, nas funções "simula_processos()" e "gerencia_memoria()", olhamos para o novo valor retornado por "time()" e, subtraindo o valor inicial deste novo valor, obtemos o tempo que se passou desde o início da execução do programa.
+
+
+Outras observações:
+
+Usamos um tempo de 3 segundos para zerar os bits R das páginas pois experimentamos com alguns valores para esse tempo e chegamos à conclusão de que 3 segundos era uma quantidade boa.
+
+No algoritmo Least Recently Used Page (LRU), decidimos por implementar a terceira opção, pois a primeira não era possível de se implementar no contexto do EP e a segunda seria muito custosa em termos de memória.
