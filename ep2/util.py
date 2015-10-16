@@ -1,27 +1,26 @@
 #-------------------------------------#
 #               util.py               #
 #-------------------------------------#
-#    Arqivo com funcoes auxiliares    #
+#    Arqivo com funções auxiliares    #
 #-------------------------------------#
 from estruturas import *
 from espacolivre import *
 from substituipaginas import *
 from struct import *
 from time import *
-from operator import itemgetter
 
-#Abre o arquivo com nome dentro da string filename
-def openFile(filename):
+# Função que abre o arquivo com nome dentro da string nome
+def abre_arquivo(nome):
     try:
-        trace = open(filename, "r")
+        trace = open(nome, "r")
         return trace
     except IOError:
         print ("Erro na abertura do arquivo")
         return 0
 
 
-#Funcao para montar a lista de processos, com as informcoes do arquivo trace
-def listaProcessosBuild(trace):
+# Função para montar a lista de processos, com as informações do arquivo trace
+def monta_lista_processos(trace):
     lista = []
     linha = trace.readline()
     pid = 0
@@ -29,16 +28,22 @@ def listaProcessosBuild(trace):
         linha_trace = linha.split(" ")
         if linha_trace[-1] == "\n" or linha_trace[-1] == '':
             linha_trace.pop()
+
         acessos = []
         for x in range(4, len(linha_trace), 2):
             acesso = Acesso(int(linha_trace[x]), int(linha_trace[x + 1]))
             acessos.append(acesso)
+
         processo = Processo(int(linha_trace[0]), linha_trace[1], pid, int(linha_trace[2]), int(linha_trace[3]), acessos)
         lista.append(processo)
+
         linha = trace.readline()
         pid += 1
+
     return lista
 
+
+# Função que verifica se todos os processos terminaram (True) ou não (False)
 def processos_terminaram(lista_processos):
     for processo in lista_processos:
         if not processo.terminou:
@@ -46,24 +51,43 @@ def processos_terminaram(lista_processos):
     return True
 
 
+"""
+Função que gerencia a memória, alocando processos em espaços livres quando eles
+chegam de acordo com o algoritmo escolhido pelo usuário. A alocação é na memória
+física e o arquivo que representa a memória é atualizado no final da função.
+"""
 def gerencia_memoria(tempo_inicio, lista_processos, mem_virtual, ultima_pos=None, dic_tamanhos_fixos=None):
     for processo in lista_processos:
         tempo_atual = time() - tempo_inicio
+
         if tempo_atual >= processo.t0 and not processo.rodando and not processo.terminou:
+            # argumentos sinalizam qual o algoritmo sendo usado
+
             if ultima_pos is None and dic_tamanhos_fixos is None:
-                firstFit(mem_virtual, processo)
+                first_fit(mem_virtual, processo)
+
             elif dic_tamanhos_fixos is None:
-                ultima_pos = nextFit(mem_virtual, processo, ultima_pos)
+                ultima_pos = next_fit(mem_virtual, processo, ultima_pos)
+
             elif ultima_pos is None:
                 quick_fit(mem_virtual, processo, dic_tamanhos_fixos)
                 atualiza_dic_tamanhos_fixos(mem_virtual, dic_tamanhos_fixos)
 
     escreve_na_memoria(mem_virtual, False)
-    if ultima_pos is not None and dic_tamanhos_fixos is None:
+    if ultima_pos is not None and dic_tamanhos_fixos is None:   # Next Fit precisa devolver posição
         return ultima_pos
 
 
-def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, mem_virtual, mem_fisica, subs, matriz_acessos, dic_tamanhos_fixos=None):
+
+"""
+Função que simula os processos em execução, fazendo com que os acessos à
+memória física que eles fazem ocorram quando for o tempo certo e chamando, se
+necessário (quando ocorre page fault) a função que gerencia as páginas (usa os
+algoritmos de substituição de páginas). Também remove os processos das memórias
+se chega o tempo em que eles terminam e atualiza constantemente os arquivos que
+representam as memórias.
+"""
+def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_paginas, mem_virtual, mem_fisica, subs, dic_tamanhos_fixos=None):
     if subs == 4:
         # atualiza contador para o LRU
         for pagina in lista_paginas:
@@ -77,18 +101,17 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
                 processo_mem_virt = mem_virtual.localiza(processo.nome)
                 if processo_mem_virt:
                     posicao_virtual = processo_mem_virt.inicio_mem + acesso.posicao
-                posicao_fisica = tabela_paginas.map(posicao_virtual)
+
+                posicao_fisica = tabela_paginas.tabela[int(posicao_virtual / 16)]
                 if posicao_fisica is not None:
                     print("Posicao", posicao_virtual, "está no quadro", posicao_fisica)
                 else:
                     print("Page Fault!!!", (posicao_virtual))
-                    gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica, subs, matriz_acessos)
+                    gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica, subs)
                 acesso.ocorreu = True
+
                 # atualiza bit R
                 tabela_paginas.acessos[int(posicao_virtual / 16)] = 1
-                #Nesse ponto devemos atualiza a matriz de acessos
-                if subs == 4:
-                    matriz_acessos.acesso_quadro(tabela_paginas.map(posicao_virtual))
 
                 escreve_na_memoria(mem_fisica, True)
 
@@ -100,6 +123,7 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
             processo.rodando = False
             processo.terminou = True
 
+            # se está usando o Quick Fit, atualiza dicionário
             if dic_tamanhos_fixos is not None:
                 atualiza_dic_tamanhos_fixos(mem_virtual, dic_tamanhos_fixos)
 
@@ -108,6 +132,10 @@ def simula_processos(tempo_inicio, lista_paginas, lista_processos, tabela_pagina
     escreve_na_memoria(mem_virtual, False)
 
 
+"""
+Função que remove da lista de páginas na memória física e da tabela de páginas
+as páginas de um processo que terminou.
+"""
 def libera_paginas(tabela_paginas, lista_paginas, mem_virtual, processo):
     end_virt = mem_virtual.localiza(processo.nome)
     for pagina in range(end_virt.inicio_mem, end_virt.inicio_mem + end_virt.tamanho_mem, 16):
@@ -117,7 +145,12 @@ def libera_paginas(tabela_paginas, lista_paginas, mem_virtual, processo):
             lista_paginas.remove(int(pagina / 16))
 
 
-def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica, subs, matriz_acessos):
+"""
+Função que gerencia páginas, alocando uma página na memória física se houver
+espaço livre e chamando o algoritmo de substituição de páginas especificado
+se não houver.
+"""
+def gerencia_paginas(lista_paginas, tabela_paginas, posicao_virtual, processo, mem_fisica, subs):
     print("lista:", lista_paginas)
     for pedaco in mem_fisica:
         if pedaco.livre and pedaco.tamanho_mem >= 16:

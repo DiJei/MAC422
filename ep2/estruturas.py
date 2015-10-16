@@ -1,3 +1,9 @@
+#--------------------------------------------#
+#               estruturas.py                #
+#--------------------------------------------#
+#   Estruturas de dados usadas no programa   #
+#--------------------------------------------#
+
 
 class Item:
     """
@@ -65,6 +71,7 @@ class Lista:
     def __iter__(self):
         return self.gen()
 
+    # usada para fazer iteração sem modificar a lista
     def gen(self):
         atual = self.inicio
         while atual:
@@ -87,18 +94,23 @@ class Lista:
         pedaco.tamanho_mem = posicao - pedaco.inicio_mem
         self.adiciona_depois_de(pedaco, novo_pedaco)
 
+    # localiza item na lista por nome (retorna None se não achar)
     def localiza(self, nome):
         for item in self:
             if item.proc_nome == nome:
                 return item
         return None
 
+    # localiza item (pedaço) na lista que contém a posição especificada
+    # e retorna None se não achar
     def pedaco_na_posicao(self, posicao):
         for item in self:
             if item.inicio_mem <= posicao < item.inicio_mem + item.tamanho_mem:
                 return item
         return None
 
+    # localiza item (pedaço) na lista que está na página especificada da
+    # memória e retorna None se não achar
     def pedaco_na_pagina(self, pagina):
         for item in self:
             if int(item.inicio_mem / 16) == pagina:
@@ -112,28 +124,21 @@ class Lista:
             item.prox.ant = novo_item
         item.prox = novo_item
 
-    def remove_depois_de(self, item):
-        if item.prox:
-            if item.prox.prox:
-                item.prox.prox.ant = item
-            item.prox = item.prox.prox
-
-    """
-    Remove o processo com nome nome e já atualiza a lista juntando espaços
-    em branco (se for o caso).
-    """
+    # remove o processo com nome especificado e já atualiza a lista juntando espaços
+    # em branco (se for o caso)
     def remove(self, nome):
         for item in self:
             if item.proc_nome == nome:
 
                 if self.inicio is item:
+                    # se vai tirar o primeiro da lista e o próximo é livre, próximo vira primeiro
                     if item.prox and item.prox.livre:
                         self.inicio = item.prox
                         self.inicio.ant = None
 
                 if item.prox and item.ant:
                     if (item.ant.livre and item.prox.livre):
-                        # Caso que a celula está no meio de duas células livres
+                        # caso que a celula está no meio de duas células livres
                         item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem + item.prox.tamanho_mem
                         if item.prox.prox:
                             item.prox.prox.ant = item.ant
@@ -143,7 +148,7 @@ class Lista:
                         continue
                 if item.ant:
                     if item.ant.livre:
-                        # Caso que a anterior é livre
+                        # caso que a anterior é livre
                         item.ant.tamanho_mem = item.ant.tamanho_mem + item.tamanho_mem
                         item.ant.prox = item.prox
                         if item.prox:
@@ -151,7 +156,7 @@ class Lista:
                         continue
                 if item.prox:
                     if item.prox.livre:
-                        # Caso que a proxima é livre
+                        # caso que a proxima é livre
                         item.prox.tamanho_mem = item.tamanho_mem + item.prox.tamanho_mem
                         item.prox.inicio_mem = item.inicio_mem
                         if item.ant:
@@ -216,72 +221,21 @@ class Acesso:
 
 class TabelaPagina:
     """
-    Tabela de paginas, basicamente um dicionário cuja as chaves são
-    as paginas e quadros de paginas são valores.
+    Tabela de páginas, contém uma lista que mapeia as páginas virtuais (índices)
+    para os quadros de páginas na memória físicas (valores) e listas
+    representando o bit R e o contador (usado no LRU) de cada página virtual
     """
     paginas = 0
     tabela = []     # o índice é a página, o valor é o quadro
     acessos = []    # cada posição representa o bit R da respectiva página
-    contador = []   # cada posição representa o valor do contador da
-                    # respectiva página
+    contador = []   # cada posição representa valor do contador da respectiva página
 
     def __init__(self, virtual):
-        self.paginas = int(virtual / 16)   # Quantidade de paginas
+        self.paginas = int(virtual / 16)   # quantidade de paginas
         for x in range(self.paginas):
             self.tabela.append(None)
             self.acessos.append(0)
             self.contador.append(0)
 
-    def map(self, endereco_virtual):
-        pagina = int(endereco_virtual / 16)
-        quadro = self.tabela[pagina]
-
-        return quadro
-
-    def reseta_acessos(self):
+    def reseta_acessos(self):   # reseta os bits R de todas as páginas
         self.acessos = [0 for pagina in self.acessos]
-
-"""
- Matriz para implementacao do algoritmo de substituicao de pagina LRU
-"""
-import numpy as np
-class MatrizAcessos:
-    matriz = None
-    size = 0
-
-    def __init__(self, num_quadros):
-        self.matriz = np.zeros((num_quadros * num_quadros), dtype=np.uint8)
-        self.matriz = np.reshape(self.matriz, (num_quadros, num_quadros))
-        self.size = self.matriz.shape[0]
-
-    """
-    recebe o numero de quadro e coloca 1 na linha k
-    e zera coluna k
-    """
-    def acesso_quadro(self, k):
-        self.matriz[k] = 1
-        self.matriz.transpose()[k] = 0
-        #print( self.size)
-
-    """
-    devolve a linha que possui o menor numero binário
-    """
-    def menor_quadro(self):
-        menor_bin = [-1, -1]  # número e linha, respectivamente
-
-        for linha in range(self.size):
-            valor_linha = 0
-            potencia = self.size - 1
-
-            for coluna in range(self.size):
-                valor_linha += (2 ** potencia) * self.matriz[linha][coluna]
-                potencia -= 1
-
-            if valor_linha == 0:
-                return linha
-
-            if valor_linha < menor_bin[0] or menor_bin[0] == -1:
-                menor_bin[0] = valor_linha
-                menor_bin[1] = linha
-
-        return menor_bin[1]
